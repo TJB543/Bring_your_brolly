@@ -107,6 +107,7 @@ var enemy = [];
 var savestate = [];
 let highscore;
 var gamestate = 0;
+var graphical_version = 0;
 function setup() {
   umbrella = loadImage('umbrella-1.png');
   legacy = createButton('Legacy');
@@ -216,6 +217,16 @@ function legacy_pressed() {
         enemy[i].gra = random(0.5,0.75);
       }
     }
+function graphical_pressed() {
+  graphical.remove();
+  legacy.remove();
+  gamestate = 1;
+  reset();
+  for(let i = 0; i< amount;i++) {
+        enemy[i].gra = random(0.5,0.75);
+      }
+  graphical_version = 1;
+}
 
 function draw() {
   if (gamestate == 1) {
@@ -257,6 +268,11 @@ function draw() {
     }
     if (key === 'k') {
       player.guide = 1;
+    }
+    if(graphical_version == 0) {
+      if(player.sheild == 1) {
+        fill(0,255,255);
+      }
     }
     player.update();
     fill(0);
@@ -322,19 +338,18 @@ function draw() {
       sheildcooldown -= 1;
     }
     if (player.dead != 0) {
-    if (player.sheild == 1) {
-      if(coat < player.fat_1){
-      coat++
-      }
-      fill(0,255,255);
-      rect(player.x,player.y,coat,player.fat_2);
-    } else if(coat >= 0){
-        coat--
-      console.log(coat);
-        fill(0,255,255);
-        rect(player.x,player.y,coat,player.fat_2);
-      }
-      else{
+      if(graphical_version == 1) {
+        if (player.sheild == 1) {
+          if(coat < player.fat_1){
+            coat++
+           }
+          fill(0,255,255);
+          rect(player.x,player.y,coat,player.fat_2);
+        } else if(coat >= 0){
+          coat--
+          fill(0,255,255);
+          rect(player.x,player.y,coat,player.fat_2);
+        } else{}
       }
     }
     
@@ -342,7 +357,7 @@ function draw() {
   } else if(gamestate == 0){
     background(255);
     stroke(255);
-    image(umbrella,width/2-35,height/4,100,100)
+    image(umbrella,width/2-35,height/4,100,100);
     for (let i = 0; i < amount; i++) {
       if (enemy[i].side < 2) {
         enemy[i].update();
@@ -357,6 +372,7 @@ function draw() {
     legacy.position(width/2-50,height/2+50);
     legacy.mousePressed(legacy_pressed);
     graphical.position(width/2+10,height/2+50);
+    graphical.mousePressed(graphical_pressed);
     text('(WIP)',width/2+48,height/2+90);
     textAlign(LEFT);
     text("Controls:", 0, height - 160);
